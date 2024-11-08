@@ -1,13 +1,16 @@
 import express from "express";
 import morgan from  "morgan";
+import cookieParser from "cookie-parser";
 
 import taskRoutes  from "./routes/tasks.routes.js";
 import authRoutes from  "./routes/auth.routes.js";
+
 
 const app = express()
 
 //Middlewares
 app.use(morgan('dev')) 
+app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false}))
 
