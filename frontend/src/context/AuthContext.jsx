@@ -3,6 +3,7 @@ import { createContext, useContext, useState, useEffect } from 'react'
 import Cookie from 'js-cookie'
 import axios from '../api/axios';
 import PropTypes from 'prop-types';
+//import { set } from 'zod';
 
 
 export const AuthContext = createContext()
@@ -19,6 +20,7 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState(null)
     const [isAuth, setIsAuth] = useState(false)
     const [errors, setErrors] = useState(null)
+    const [loading, setLoading] = useState(true)
 
     const signin = async (data) => {
         try {
@@ -54,27 +56,46 @@ export function AuthProvider({ children }) {
         }
     }
 
-    useEffect(() => {
-    if(Cookie.get('token')){
-        axios.get('/profile')
-        .then (res => {
-            setUser(res.data)
-            setIsAuth(true)
-        })
-        .catch(err =>{
-            console.log(err)
-            setUser(null)
-            setIsAuth(false)
-        })
+    const signout = async () => {
+        await axios.post("/signout")
+        setUser(null)
+        setIsAuth(false)
     }
+
+
+    useEffect(() => {
+        setLoading(true)
+        if (Cookie.get('token')) {
+            axios.get('/profile')
+                .then(res => {
+                    setUser(res.data)
+                    setIsAuth(true)
+                })
+                .catch(err => {
+                    console.log(err)
+                    setUser(null)
+                    setIsAuth(false)
+                })
+        }
+        setLoading(false)
     }, [])
+
+    useEffect(() => {
+        const clean = setTimeout(() => {
+            setErrors(null)
+        }, 5000);
+        
+        return () => clearTimeout(clean);
+    }, [errors])
 
     return <AuthContext.Provider value={{
         user,
         isAuth,
         errors,
         signup,
-        signin
+        signin,
+        signout,
+        loading
     }}>
         {children}
     </AuthContext.Provider>

@@ -5,15 +5,17 @@ import { useAuth } from '../context/AuthContext'
 
 function LoginPage() {
 
-  const { register, handleSubmit } = useForm()
-  const { signin, errors } = useAuth()
+  const { register, handleSubmit, formState: {
+    errors
+  } } = useForm()
+  const { signin, errors: loginErrors } = useAuth()
   const navigate = useNavigate()
 
   const onSubmit = handleSubmit(async (data) => {
     const user = await signin(data)
 
     if(user){
-      navigate('/profile')
+      navigate('/tasks')
     }
   })
 
@@ -21,8 +23,8 @@ function LoginPage() {
     <Container className="h-[calc(100vh-10rem)] flex justify-center items-center">
       <Card>
 
-        {errors && (
-            errors.map((err, index) => (
+        {loginErrors && (
+            loginErrors.map((err, index) => (
               <p key={index} className='text-red-500 text-center'>
                 {err}
               </p>
@@ -41,6 +43,9 @@ function LoginPage() {
               required: true
             })}
           />
+          {
+            errors.email && <p className="text-red-500">email is required</p>
+          }
 
           <Label htmlFor='password'>
             Password
@@ -50,13 +55,16 @@ function LoginPage() {
               required: true
             })}
           />
+          {
+            errors.password && <p className="text-red-500">password is required</p>
+          }
 
           <Button>
             Sign in
           </Button>
 
           <div className='flex justify-between my-4'>
-            <p>Don&apos;t have an account?</p>
+            <p className='mr-4'>Don&apos;t have an account?</p>
             <Link to="/register" className='font-bold'>
               Register
             </Link>
