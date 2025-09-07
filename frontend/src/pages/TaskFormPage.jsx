@@ -51,11 +51,11 @@ function TaskFormPage() {
           ))
         }
         <h2 className="text-3xl font-bold my-4">
-          {params.id ? 'Edit Task' : 'Create Task'}
+          {params.id ? 'Editar tarea' : 'Crear tarea'}
         </h2>
         <form onSubmit={onSubmit}>
-          <Label htmlFor="title">Title</Label>
-          <Input type="text" placeholder="Title" autoFocus
+          <Label htmlFor="title">Título</Label>
+          <Input type="text" placeholder="Ingresa el título" autoFocus
             {
             ...register("title", {
               required: true,
@@ -64,11 +64,11 @@ function TaskFormPage() {
 
           />
           {
-            errors.title && <span className="text-red-500">Title is required</span>
+            errors.title && <span className="text-red-500">El título es obligatori</span>
           }
 
-          <Label htmlFor="description">Description</Label>
-          <Textarea placeholder="Description"
+          <Label htmlFor="description">Ingresa la descripción</Label>
+          <Textarea placeholder="Ingresa la descripción"
             rows={3}
             {
             ...register("description")
@@ -76,7 +76,7 @@ function TaskFormPage() {
           />
 
           <Button>
-            {params.id ? 'Edit Task' : 'Create Task'}
+            {params.id ? 'Editar tarea' : 'Crear tarea'}
           </Button>
 
         </form>

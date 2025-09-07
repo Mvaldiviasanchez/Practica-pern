@@ -29,55 +29,55 @@ function RegisterPage() {
             ))
           )
         }
-        <h3 className="text-2xl font-bold">Register</h3>
+        <h3 className="text-2xl font-bold">Registrarse</h3>
 
         <form onSubmit={onSubmit}>
 
           <Label htmlFor='name'>
-            Name
+            Nombre
           </Label>
-          <Input placeholder="Enter your fullname"
+          <Input placeholder="Ingresa tu nombre completo"
             {...register('name', {
               required: true,
             })}
           />
 
           {
-            errors.name && <p className="text-red-500">Name is required</p>
+            errors.name && <p className="text-red-500">El nombre es obligatorio</p>
           }
 
           <Label htmlFor='email'>
-            Email
+            Correo
           </Label>
-          <Input type="email" placeholder="Enter your email"
+          <Input type="email" placeholder="Ingresa tu correo"
             {...register('email', {
               required: true,
             })}
           />
 
           {
-            errors.email && <p className="text-red-500">email is required</p>
+            errors.email && <p className="text-red-500">El correo es obligatorio</p>
           }
 
           <Label htmlFor='password'>
-            Password
+            Contraseña
           </Label>
-          <Input type="password" placeholder="Enter your password"
+          <Input type="password" placeholder="Ingresa tu contraseña"
             {...register('password', {
               required: true,
             })}
           />
 
           {
-            errors.password && <p className="text-red-500">password is required</p>
+            errors.password && <p className="text-red-500">La contraseña es obligatoria</p>
           }
 
-          <Button>Register</Button>
+          <Button>Registrarse</Button>
 
           <div className='flex justify-between my-4'>
-            <p className='mr-4'>Already have an account?</p>
+            <p className='mr-4'>¿Ya tienes una cuenta?</p>
             <Link to="/login" className='font-bold'>
-              Login
+              Inicia sesión
             </Link>
 
           </div>

@@ -4,33 +4,33 @@ import { BiTask, BiUserCircle} from 'react-icons/bi'
 
 export const publicRoutes = [
     {
-        name: "About",
+        name: "Acerca de",
         path: "/about",
     },
     {
-        name: "Login",
+        name: "Iniciar sesión",
         path: "/login",
     },
     {
-        name: "Register",
+        name: "Registrarse",
         path: "/register",
     },
 ]
 
 export const privateRoutes = [
     {
-        name: "Tasks",
+        name: "Tareas",
         path: "/tasks",
         icon: <BiTask className='w-5 h-5' />
     },
     {
-        name: "Add",
+        name: "Agregar",
         path: "/tasks/new",
         icon: <MdTaskAlt className='w-5 h-5' />
 
     },
     {
-        name: "Profile",
+        name: "Perfil",
         path: "/profile",
         icon: <BiUserCircle className='w-5 h-5' />
 

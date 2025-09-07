@@ -32,41 +32,41 @@ function LoginPage() {
           )
         }
 
-        <h1 className='text-4xl font-bold my-2 text-center'>Sign in</h1>
+        <h1 className='text-4xl font-bold my-2 text-center'>Iniciar sesión</h1>
 
         <form onSubmit={onSubmit}>
           <Label htmlFor='email'>
-            Email
+            Correo electrónico
           </Label>
-          <Input type="email" placeholder="Email"
+          <Input type="email" placeholder="Correo electrónico"
             {...register('email', {
               required: true
             })}
           />
           {
-            errors.email && <p className="text-red-500">email is required</p>
+            errors.email && <p className="text-red-500">El correo es obligatorio</p>
           }
 
           <Label htmlFor='password'>
-            Password
+            Contraseña
           </Label>
-          <Input type="password" placeholder="Password"
+          <Input type="password" placeholder="Contraseña"
             {...register('password', {
               required: true
             })}
           />
           {
-            errors.password && <p className="text-red-500">password is required</p>
+            errors.password && <p className="text-red-500">La contraseña es obligatoria</p>
           }
 
           <Button>
-            Sign in
+            Iniciar sesión
           </Button>
 
           <div className='flex justify-between my-4'>
-            <p className='mr-4'>Don&apos;t have an account?</p>
+            <p className='mr-4'>¿No tienes una cuenta?</p>
             <Link to="/register" className='font-bold'>
-              Register
+              Regístrate
             </Link>
 
           </div>

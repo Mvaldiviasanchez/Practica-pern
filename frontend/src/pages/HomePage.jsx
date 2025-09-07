@@ -7,8 +7,8 @@ function HomePage() {
         <div>
 
             <Card>
-                <h1 className='text-3xl font-bold my-4'>Home Page</h1>
-                <p>This is the home page</p>
+                <h1 className='text-3xl font-bold my-4'>Página principal</h1>
+                <p>Bienvenido a la aplicación de tareas ORDENAT</p>
             </Card>
         </div>
     )

@@ -14,7 +14,7 @@ function Navbar() {
         <nav className='bg-zinc-950'>
             <Container className="flex justify-between py-3">
                 <Link to="/">
-                    <h1 className='font-bold text-2xl'>PERN tasks</h1>
+                    <h1 className='font-bold text-2xl'>Tareas</h1>
                 </Link>
                 <ul className='flex items-center justify-center md:gap-x-1'>
                     {
@@ -48,7 +48,7 @@ function Navbar() {
                                 >
                                     <BiLogOut className='w-5 h-5' />
                                     <span className='hidden sm:block'>
-                                    Logout
+                                    Cerrar sesión
                                     </span>
                                 </li>
 
