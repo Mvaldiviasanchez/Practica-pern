@@ -8,6 +8,8 @@ import authRoutes from "./routes/auth.routes.js";
 import { ORIGIN } from "./config.js";
 import { pool } from "./db.js";
 import usersRoutes from "./routes/users.routes.js";
+import { sendTestEmail } from "./libs/mailer.js";
+
 
 const app = express()
 
@@ -40,5 +42,16 @@ app.use((err, req, res, next) => {
 
     })
 })
+
+// TEST: enviar correo para verificar SMTP
+app.get("/api/test-email", async (req, res) => {
+  try {
+    await sendTestEmail();
+    res.json({ message: "Correo de prueba enviado correctamente" });
+  } catch (err) {
+    console.error("Error enviando correo de prueba:", err);
+    res.status(500).json({ error: "No se pudo enviar el correo", details: err.message });
+  }
+});
 
 export default app;

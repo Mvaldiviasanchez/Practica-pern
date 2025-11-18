@@ -3,6 +3,7 @@ import { Container, Card, Button } from "../components/ui";
 import { useAuth } from "../context/AuthContext";
 import { motion } from "framer-motion";
 import { FaEnvelope, FaCalendarAlt, FaUserCircle } from "react-icons/fa";
+import axios from "../api/axios";
 
 // Estilos y seeds para DiceBear
 const styles = ["bottts", "avataaars", "pixel-art", "croodles"];
@@ -13,6 +14,7 @@ const makeDiceBear = (style, seed) =>
 
 function ProfilePage() {
   const { user, updateAvatar } = useAuth();
+
   const miembroDesde = user?.created_at
     ? new Date(user.created_at).toLocaleDateString("es-ES", {
         year: "numeric",
@@ -32,8 +34,15 @@ function ProfilePage() {
     [baseSeed]
   );
 
-  const [selected, setSelected] = useState(user?.avatar_url || user?.gravatar);
+  const [selected, setSelected] = useState(
+    user?.avatar_url || user?.gravatar
+  );
   const [saving, setSaving] = useState(false);
+
+  // --- NUEVO: estado para correo ---
+  const [email, setEmail] = useState(user?.email || "");
+  const [savingEmail, setSavingEmail] = useState(false);
+  const [emailMsg, setEmailMsg] = useState("");
 
   const handleSave = async () => {
     try {
@@ -44,6 +53,39 @@ function ProfilePage() {
       alert(e.message);
     } finally {
       setSaving(false);
+    }
+  };
+
+  // --- NUEVO: guardar correo en backend ---
+  const handleSaveEmail = async () => {
+    if (!email) {
+      setEmailMsg("El correo no puede estar vacío");
+      return;
+    }
+
+    try {
+      setSavingEmail(true);
+      setEmailMsg("");
+
+      const res = await axios.put(
+        "/users/me/email",
+        { email },
+        { withCredentials: true }
+      );
+
+      // si el backend devuelve el usuario actualizado, podrías usarlo si lo necesitas
+      // por ahora solo actualizamos el estado local de email
+      setEmail(res.data.email || email);
+      setEmailMsg("✅ Correo actualizado correctamente");
+    } catch (err) {
+      console.error("Error actualizando correo:", err);
+      const msg =
+        err?.response?.data?.[0] ||
+        err?.response?.data?.message ||
+        "Error actualizando correo";
+      setEmailMsg(`❌ ${msg}`);
+    } finally {
+      setSavingEmail(false);
     }
   };
 
@@ -75,7 +117,9 @@ function ProfilePage() {
 
             {/* Nombre + botón guardar avatar */}
             <div className="text-center md:text-left">
-              <h1 className="text-2xl md:text-3xl font-bold">{user?.name}</h1>
+              <h1 className="text-2xl md:text-3xl font-bold">
+                {user?.name}
+              </h1>
               <p className="text-gray-400 mt-1">Mi perfil en ORDENAT</p>
               <div className="flex flex-wrap gap-3 mt-4">
                 <Button
@@ -91,14 +135,34 @@ function ProfilePage() {
 
           {/* Info */}
           <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* --- CORREO EDITABLE --- */}
             <div className="bg-zinc-900/60 rounded-lg p-4">
-              <div className="flex items-center gap-2 text-gray-300">
+              <div className="flex items-center gap-2 text-gray-300 mb-2">
                 <FaEnvelope className="text-sky-400" />
                 <span className="font-semibold">Correo</span>
               </div>
-              <p className="mt-1 break-all">{user?.email}</p>
+
+              <div className="flex flex-col gap-2">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+                />
+                <Button
+                  onClick={handleSaveEmail}
+                  disabled={savingEmail}
+                  className="self-start bg-sky-600 hover:bg-sky-700 text-sm px-3 py-1.5"
+                >
+                  {savingEmail ? "Guardando..." : "Guardar correo"}
+                </Button>
+                {emailMsg && (
+                  <p className="text-xs text-gray-300">{emailMsg}</p>
+                )}
+              </div>
             </div>
 
+            {/* Miembro desde */}
             <div className="bg-zinc-900/60 rounded-lg p-4">
               <div className="flex items-center gap-2 text-gray-300">
                 <FaCalendarAlt className="text-sky-400" />
