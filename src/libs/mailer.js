@@ -34,13 +34,14 @@ export const transporter = nodemailer.createTransport({
   },
 });
 
-// 3) Función genérica para enviar correo
-export async function sendMail({ to, subject, html }) {
+// 3) Función genérica para enviar correo (AHORA CON ATTACHMENTS)
+export async function sendMail({ to, subject, html, attachments = [] }) {
   const info = await transporter.sendMail({
     from: `"${APP_NAME}" <${SMTP_USER}>`,
     to,
     subject,
     html,
+    attachments, // 👈 soporta el PDF adjunto
   });
 
   console.log("📨 Email enviado:", info.messageId);

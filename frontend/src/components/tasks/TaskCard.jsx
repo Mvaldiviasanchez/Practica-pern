@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { PiTrashSimpleLight } from "react-icons/pi";
 import { BiPencil } from "react-icons/bi";
 
-import { getCategoryLabel } from "./taskCategories"; // ← IMPORTANTE
+import { getCategoryLabel } from "./taskCategories";
 
 // ----------------------------------------------------
 // HELPER PARA FORMATEAR FECHA Y MOSTRAR "Faltan X días"
@@ -26,7 +26,7 @@ const getReminderInfo = (reminder_at) => {
   const hh = pad(date.getHours());
   const mi = pad(date.getMinutes());
 
-  const label = `${dd}-${mm}-${yyyy} ${hh}:${mi}`; // formato bonito
+  const label = `${dd}-${mm}-${yyyy} ${hh}:${mi}`;
 
   const now = new Date();
   const diffMs = date.getTime() - now.getTime();
@@ -65,30 +65,24 @@ function TaskCard({ task }) {
   `;
 
   return (
-    <Card
-  key={task.id}
-  className={`${cardClasses} overflow-hidden`}
->
-
+    <Card key={task.id} className={`${cardClasses} overflow-hidden`}>
       {/* HEADER: título + categoría */}
       <div className="flex items-start justify-between mb-1 gap-3">
-  <h1 className="text-2xl font-bold break-words flex-1 min-w-0">
-    {task.title}
-  </h1>
+        <h1 className="text-2xl font-bold break-words flex-1 min-w-0">
+          {task.title}
+        </h1>
 
-  {task.category && (
-    <span className="text-xs px-2 py-1 rounded-full bg-sky-900 text-sky-200 whitespace-nowrap flex-shrink-0">
-      {getCategoryLabel(task.category)}
-    </span>
-  )}
-</div>
-
+        {task.category && (
+          <span className="text-xs px-2 py-1 rounded-full bg-sky-900 text-sky-200 whitespace-nowrap flex-shrink-0">
+            {getCategoryLabel(task.category)}
+          </span>
+        )}
+      </div>
 
       {/* DESCRIPCIÓN */}
       <p className="text-neutral-300 mb-2 break-words">
-  {task.description}
-</p>
-
+        {task.description}
+      </p>
 
       {/* RECORDATORIO */}
       {reminderInfo && (
@@ -100,6 +94,16 @@ function TaskCard({ task }) {
             }`}
           >
             {reminderInfo.status}
+          </span>
+        </div>
+      )}
+
+      {/* PDF adjuntado (solo texto) */}
+      {task.attachment_name && (
+        <div className="text-xs mt-1 mb-2 text-neutral-300 flex items-center gap-1 max-w-[12rem] truncate">
+          <span>📎 PDF adjuntado:</span>
+          <span title={task.attachment_name} className="truncate">
+            {task.attachment_name}
           </span>
         </div>
       )}
@@ -132,6 +136,8 @@ TaskCard.propTypes = {
     description: PropTypes.string,
     category: PropTypes.string,
     reminder_at: PropTypes.string,
+    attachment_path: PropTypes.string,
+    attachment_name: PropTypes.string,
   }).isRequired,
 };
 

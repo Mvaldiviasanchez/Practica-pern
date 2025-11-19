@@ -1,8 +1,15 @@
 // src/pages/TaskFormPage.jsx
-import { Card, Input, Textarea, Label, Button, Container } from "../components/ui";
+import {
+  Card,
+  Input,
+  Textarea,
+  Label,
+  Button,
+  Container,
+} from "../components/ui";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTasks } from "../context/TaskContext";
 import { motion } from "framer-motion";
 import {
@@ -43,13 +50,38 @@ function TaskFormPage() {
   const { createTask, updateTask, loadTask, errors: tasksErrors } = useTasks();
   const params = useParams();
 
+  // 📎 archivo nuevo seleccionado
+  const [attachment, setAttachment] = useState(null);
+  const [selectedFileName, setSelectedFileName] = useState("");
+
+  // 📎 archivo que ya tenía la tarea (cuando estamos editando)
+  const [existingAttachmentName, setExistingAttachmentName] = useState("");
+
   const onSubmit = handleSubmit(async (data) => {
     let task;
 
+    // Armamos siempre un FormData (crear y editar)
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("description", data.description || "");
+    formData.append("category", data.category || DEFAULT_TASK_CATEGORY);
+
+    if (data.reminder_at) {
+      formData.append("reminder_at", data.reminder_at);
+    }
+
+    // Si hay archivo nuevo seleccionado, lo mandamos
+    // Si no hay, NO mandamos "attachment" => el backend mantiene el antiguo
+    if (attachment) {
+      formData.append("attachment", attachment);
+    }
+
     if (!params.id) {
-      task = await createTask(data);
+      // CREAR
+      task = await createTask(formData);
     } else {
-      task = await updateTask(params.id, data);
+      // EDITAR
+      task = await updateTask(params.id, formData);
     }
 
     if (task) navigate("/tasks");
@@ -63,9 +95,21 @@ function TaskFormPage() {
         setValue("description", task.description);
         setValue("category", task.category || DEFAULT_TASK_CATEGORY);
         setValue("reminder_at", formatDateTimeLocal(task.reminder_at));
+
+        // guardamos el nombre del archivo ya adjunto (si existe)
+        setExistingAttachmentName(task.attachment_name || "");
       });
     }
   }, []);
+
+  // Texto que se muestra al lado del botón de archivo
+  const fileLabelText = (() => {
+    if (selectedFileName) return `Archivo seleccionado: ${selectedFileName}`;
+    if (existingAttachmentName && params.id) {
+      return `Archivo actual: ${existingAttachmentName}`;
+    }
+    return "Ningún archivo seleccionado";
+  })();
 
   return (
     <Container className="min-h-[calc(100vh-64px)] w-full flex items-start justify-center px-4 py-10">
@@ -87,6 +131,8 @@ function TaskFormPage() {
             {params.id ? "Editar tarea" : "Crear tarea"}
           </h1>
 
+          {/* IMPORTANTE: para archivos, no hace falta poner encType aquí
+              porque lo maneja el fetch/axios, pero no molesta si lo agregas */}
           <form onSubmit={onSubmit}>
             {/* TÍTULO */}
             <Label htmlFor="title">Título</Label>
@@ -133,23 +179,56 @@ function TaskFormPage() {
             )}
 
             {/* FECHA Y HORA DE RECORDATORIO */}
-<Label htmlFor="reminder_at">Recordatorio (fecha y hora)</Label>
-<input
-  id="reminder_at"
-  type="datetime-local"
-  {...register("reminder_at")}
-  className="
-    w-full mb-4 mt-1
-    rounded-md border border-neutral-700
-    bg-[#111827] text-sm text-white
-    px-3 py-2
-    placeholder-gray-400
-    focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500
-  "
-/>
+            <Label htmlFor="reminder_at">Recordatorio (fecha y hora)</Label>
+            <input
+              id="reminder_at"
+              type="datetime-local"
+              {...register("reminder_at")}
+              className="
+                w-full mb-4 mt-1
+                rounded-md border border-neutral-700
+                bg-[#111827] text-sm text-white
+                px-3 py-2
+                placeholder-gray-400
+                focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500
+              "
+            />
 
-
-
+            {/* 📎 ARCHIVO ADJUNTO */}
+            <Label htmlFor="attachment">Archivo adjunto (PDF o imagen)</Label>
+            <div className="mb-4 mt-1">
+              {/* Input real oculto */}
+              <input
+                id="attachment"
+                type="file"
+                accept=".pdf,image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  setAttachment(file || null);
+                  setSelectedFileName(file ? file.name : "");
+                }}
+              />
+              <div className="flex items-center gap-3">
+                {/* Botón custom en español y con color similar al de “Editar tarea” */}
+                <label
+                  htmlFor="attachment"
+                  className="
+                    inline-flex items-center justify-center
+                    px-4 py-2 rounded-md
+                    text-sm font-semibold
+                    cursor-pointer
+                    bg-indigo-600 hover:bg-indigo-700
+                    transition-colors
+                  "
+                >
+                  Elegir archivo
+                </label>
+                <span className="text-xs sm:text-sm text-gray-300">
+                  {fileLabelText}
+                </span>
+              </div>
+            </div>
 
             <Button className="w-full">
               {params.id ? "Editar tarea" : "Crear tarea"}

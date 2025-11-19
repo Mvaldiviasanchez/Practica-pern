@@ -10,38 +10,41 @@ import { pool } from "./db.js";
 import usersRoutes from "./routes/users.routes.js";
 import { sendTestEmail } from "./libs/mailer.js";
 
+const app = express();
 
-const app = express()
-
-//Middlewares
+// Middlewares
 app.use(cors({
     origin: ORIGIN,
     credentials: true
-}))
-app.use(morgan('dev'))
-app.use(cookieParser())
-app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
+}));
+app.use(morgan('dev'));
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-//Routes
-app.get('/', (req, res) => res.json({ message: 'Welcome to my API' }))
+// 👇 ***IMPORTANTE***
+// Servir archivos estáticos desde la carpeta "uploads"
+// para poder mostrar PDFs en el frontend
+app.use("/uploads", express.static("uploads"));
+
+// Routes
+app.get('/', (req, res) => res.json({ message: 'Welcome to my API' }));
 app.get('/api/ping', async (req, res) => {
-    const result = await pool.query('SELECT NOW()')
-    return res.json(result.rows[0])
-})
-app.use("/api", usersRoutes);
-app.use('/api', taskRoutes)
-app.use('/api', authRoutes)
+    const result = await pool.query('SELECT NOW()');
+    return res.json(result.rows[0]);
+});
 
-//Error Hander
+app.use("/api", usersRoutes);
+app.use('/api', taskRoutes);
+app.use('/api', authRoutes);
+
+// Error Handler
 app.use((err, req, res, next) => {
     res.status(500).json({
         status: "error",
         message: err.message
-
-
-    })
-})
+    });
+});
 
 // TEST: enviar correo para verificar SMTP
 app.get("/api/test-email", async (req, res) => {

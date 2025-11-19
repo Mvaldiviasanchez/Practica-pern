@@ -12,10 +12,16 @@ const APP_URL = process.env.APP_URL || "http://localhost:5173";
 // Función que busca tareas con recordatorio pendiente y envía correos
 async function processPendingReminders() {
   try {
-    // Buscar tareas con reminder_at en el pasado (ya venció)
-    // o muy cercano (últimos 5 minutos), y que aún no tengan reminder_sent
     const query = `
-      SELECT t.id, t.title, t.description, t.reminder_at, u.email
+      SELECT 
+        t.id, 
+        t.title, 
+        t.description, 
+        t.reminder_at,
+        t.attachment_path,
+        t.attachment_name,
+        t.attachment_mime,
+        u.email
       FROM task t
       JOIN users u ON u.id = t.user_id
       WHERE t.reminder_at IS NOT NULL
@@ -37,33 +43,49 @@ async function processPendingReminders() {
       const html = `
         <h2>${APP_NAME} - Recordatorio de tarea</h2>
         <p><strong>Título:</strong> ${task.title}</p>
-        <p><strong>Descripción:</strong> ${
-          task.description || "Sin descripción"
-        }</p>
+        <p><strong>Descripción:</strong> ${task.description || "Sin descripción"}</p>
         <p><strong>Fecha y hora del recordatorio:</strong> ${
-  new Date(task.reminder_at).toLocaleString("es-CL")
-}</p>
+          new Date(task.reminder_at).toLocaleString("es-CL")
+        }</p>
 
-<p style="margin-top: 20px">
-  <a href="${APP_URL}"
-     style="
-        padding: 10px 18px;
-        background: #4f46e5;
-        color: white;
-        border-radius: 6px;
-        text-decoration: none;
-        font-weight: bold;
-     ">
-     Ir a la plataforma
-  </a>
-</p>
+        ${
+          task.attachment_name
+            ? `<p><strong>Adjunto:</strong> ${task.attachment_name}</p>`
+            : ""
+        }
+
+        <p style="margin-top: 20px">
+          <a href="${APP_URL}"
+            style="
+              padding: 10px 18px;
+              background: #4f46e5;
+              color: white;
+              border-radius: 6px;
+              text-decoration: none;
+              font-weight: bold;
+            ">
+            Ir a la plataforma
+          </a>
+        </p>
       `;
+
+      // 👇 Si la tarea tiene archivo adjunto, lo añadimos al correo
+      const attachments =
+        task.attachment_path && task.attachment_name
+          ? [
+              {
+                filename: task.attachment_name,
+                path: task.attachment_path,
+              },
+            ]
+          : [];
 
       try {
         await sendMail({
           to: task.email,
           subject,
           html,
+          attachments,
         });
 
         // Marcar la tarea como ya notificada
