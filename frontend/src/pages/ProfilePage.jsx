@@ -48,7 +48,7 @@ function ProfilePage() {
     try {
       setSaving(true);
       await updateAvatar(selected);
-      alert("✅ Avatar actualizado con éxito");
+      alert("Avatar actualizado con éxito");
     } catch (e) {
       alert(e.message);
     } finally {

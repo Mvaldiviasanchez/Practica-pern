@@ -87,7 +87,7 @@ function TaskCard({ task }) {
       {/* RECORDATORIO */}
       {reminderInfo && (
         <div className="text-xs flex items-center justify-between mt-1 mb-2">
-          <span className="text-neutral-300">📅 {reminderInfo.label}</span>
+          <span className="text-neutral-300"> {reminderInfo.label}</span>
           <span
             className={`font-semibold ${
               isOverdue ? "text-red-400" : "text-sky-400"
@@ -101,7 +101,7 @@ function TaskCard({ task }) {
       {/* PDF adjuntado (solo texto) */}
       {task.attachment_name && (
         <div className="text-xs mt-1 mb-2 text-neutral-300 flex items-center gap-1 max-w-[12rem] truncate">
-          <span>📎 PDF adjuntado:</span>
+          <span> PDF adjuntado:</span>
           <span title={task.attachment_name} className="truncate">
             {task.attachment_name}
           </span>

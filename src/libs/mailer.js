@@ -41,10 +41,10 @@ export async function sendMail({ to, subject, html, attachments = [] }) {
     to,
     subject,
     html,
-    attachments, // 👈 soporta el PDF adjunto
+    attachments, // soporta el PDF adjunto
   });
 
-  console.log("📨 Email enviado:", info.messageId);
+  console.log(" Email enviado:", info.messageId);
   return info;
 }
 
@@ -54,7 +54,7 @@ export async function sendTestEmail() {
   const subject = "Prueba de correo desde ORDENAT";
   const html = `
     <h2>${APP_NAME} - Prueba de correo</h2>
-    <p>Si ves este mensaje, el SMTP está funcionando correctamente 🎉</p>
+    <p>Si ves este mensaje, el SMTP está funcionando correctamente </p>
   `;
 
   return sendMail({ to, subject, html });

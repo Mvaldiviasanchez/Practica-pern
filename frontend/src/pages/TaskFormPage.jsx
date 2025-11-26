@@ -194,7 +194,7 @@ function TaskFormPage() {
               "
             />
 
-            {/* 📎 ARCHIVO ADJUNTO */}
+            {/* ARCHIVO ADJUNTO */}
             <Label htmlFor="attachment">Archivo adjunto (PDF o imagen)</Label>
             <div className="mb-4 mt-1">
               {/* Input real oculto */}

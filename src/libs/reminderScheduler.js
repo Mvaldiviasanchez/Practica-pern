@@ -35,7 +35,7 @@ async function processPendingReminders() {
 
     if (tasks.length === 0) return;
 
-    console.log(`🔔 Recordatorios pendientes: ${tasks.length}`);
+    console.log(` Recordatorios pendientes: ${tasks.length}`);
 
     for (const task of tasks) {
       const subject = `Recordatorio de tarea: ${task.title}`;
@@ -97,19 +97,19 @@ async function processPendingReminders() {
         console.log(`✅ Recordatorio enviado para tarea ${task.id}`);
       } catch (err) {
         console.error(
-          `❌ Error enviando recordatorio para tarea ${task.id}:`,
+          ` Error enviando recordatorio para tarea ${task.id}:`,
           err.message
         );
       }
     }
   } catch (err) {
-    console.error("❌ Error en processPendingReminders:", err.message);
+    console.error(" Error en processPendingReminders:", err.message);
   }
 }
 
 // Inicia el cron (cada minuto)
 export function startReminderScheduler() {
-  console.log("⏱️ Iniciando scheduler de recordatorios (cada 1 minuto)");
+  console.log("⏱ Iniciando scheduler de recordatorios (cada 1 minuto)");
 
   cron.schedule("* * * * *", () => {
     processPendingReminders();
